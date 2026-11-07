@@ -326,10 +326,10 @@ body.locked main,body.locked .search{visibility:hidden}
             <label class="chk"><input type="checkbox" id="adsLbl" checked>Ghi số cao độ</label>
           </div>
         </div>
-        <div class="exp-sep">Civil 3D và phần mềm khác</div>
+        <div class="exp-sep">ADS Civil, Civil 3D và phần mềm khác</div>
         <div class="exp"><b>Bề mặt TIN LandXML</b><small>Civil 3D: Insert ▸ LandXML · <code>.xml</code> <span id="xmlNote"></span></small><button type="button" data-x="xml">Tải</button></div>
         <div class="exp"><b>Lưới DEM</b><small>Create Surface from DEM · <code>.asc</code> + <code>.prj</code></small><button type="button" data-x="asc">Tải</button></div>
-        <div class="exp"><b>Đồng mức, lưới tọa độ, địa vật</b><small>AutoCAD/Civil 3D, chia layer · <code>.dxf</code></small><button type="button" data-x="dxf">Tải</button></div>
+        <div class="exp"><b>Đồng mức, lưới tọa độ, địa vật</b><small>ZWCAD, AutoCAD, Civil 3D · chia layer · <code>.dxf</code> 2007</small><button type="button" data-x="dxf">Tải</button></div>
         <div class="exp"><b>Điểm cao độ PNEZD</b><small>Points from File · <code>.csv</code> · thưa <select id="ptStep" aria-label="Lấy mỗi n nút"><option value="1">mọi nút</option><option value="2" selected>1/2</option><option value="4">1/4</option><option value="5">1/5</option></select></small><button type="button" data-x="csv">Tải</button></div>
         <div class="exp"><b>GeoJSON (WGS 84)</b><small>QGIS, ArcGIS · <code>.geojson</code></small><button type="button" data-x="geojson">Tải</button></div>
         <button class="primary" type="button" data-x="zip" style="margin-top:4px">Tải trọn bộ (.zip)</button>
@@ -338,11 +338,12 @@ body.locked main,body.locked .search{visibility:hidden}
 
     <div class="step">
       <details>
-        <summary>Đưa kết quả vào ADS Civil, Civil 3D</summary>
+        <summary>Đưa kết quả vào ADS Civil, Civil 3D và phần mềm khác</summary>
         <ol>
           <li><b>ADS Civil:</b> tải gói <b>ADS Civil</b> (tệp điểm <code>.txt</code> và bản vẽ <code>.dxf</code>, kèm <code>HUONG_DAN_ADS.txt</code>). Nhập tệp điểm hoặc nhận điểm, đồng mức từ bản vẽ để dựng mô hình địa hình.</li>
           <li><b>Civil 3D — bề mặt nhanh nhất:</b> <kbd>Insert</kbd> ▸ <kbd>LandXML</kbd> ▸ chọn tệp <code>.xml</code>. Bề mặt TIN được tạo ngay, tọa độ đúng hệ đã chọn ở bước 2.</li>
           <li><b>Từ lưới DEM:</b> Toolspace ▸ Prospector ▸ <kbd>Surfaces</kbd> ▸ Create Surface. Trong <kbd>Definition</kbd> ▸ <kbd>DEM Files</kbd> ▸ Add, chọn tệp <code>.asc</code>. Nếu bản vẽ chưa gán hệ tọa độ, để trống ô hệ tọa độ của DEM.</li>
+          <li><b>ZWCAD, AutoCAD:</b> mở tệp <code>.dxf</code> (chuẩn DXF 2007, chữ tiếng Việt Unicode, font Arial). Dùng được với ZWCAD, AutoCAD, Civil 3D từ bản 2007 trở lên. Phần mềm đời cũ hơn: bật ô <b>"Chữ không dấu trong DXF"</b>.</li>
           <li><b>Đường đồng mức:</b> mở hoặc chèn tệp <code>.dxf</code>. Đồng mức là polyline có cao độ trên layer <code>DM_CAI</code>, <code>DM_CON</code>, dùng được cho <kbd>Definition</kbd> ▸ <kbd>Contours</kbd> ▸ Add.</li>
           <li><b>Điểm:</b> <kbd>Insert</kbd> ▸ <kbd>Points from File</kbd>, định dạng <code>PNEZD (comma delimited)</code>.</li>
           <li>Kiểm tra với một mốc cao độ đã biết, nhập chênh lệch vào ô ΔH rồi chạy lại.</li>
