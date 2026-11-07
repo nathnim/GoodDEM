@@ -4,7 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TerraVN</title>
-<meta name="description" content="TerraVN — Mô hình số địa hình từ dữ liệu mở. Khoanh vùng trên bản đồ, lấy cao độ và địa vật từ dữ liệu mở, dựng mô hình số địa hình, đường đồng mức, lưới tọa độ theo VN-2000 và xuất cho nhiều phần mềm thiết kế, GIS.">
+<meta name="description" content="Mô hình số địa hình từ dữ liệu mở: khoanh vùng trên bản đồ, dựng cao độ, đường đồng mức, lưới tọa độ VN-2000, địa vật; xuất cho ADS Civil, Civil 3D, GIS.">
+<!-- Thẻ xem trước khi chia sẻ đường dẫn (Zalo, Facebook, Messenger, Teams…) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:site_name" content="TerraVN">
+<meta property="og:title" content="TerraVN — Mô hình số địa hình từ dữ liệu mở">
+<meta property="og:description" content="Mô hình số địa hình từ dữ liệu mở: khoanh vùng trên bản đồ, dựng cao độ, đường đồng mức, lưới tọa độ VN-2000, địa vật; xuất cho ADS Civil, Civil 3D, GIS.">
+<meta property="og:url" content="https://nathnim.github.io/GoodDEM/">
+<meta property="og:image" content="https://nathnim.github.io/GoodDEM/og-image.png"><!-- đổi tên repo thì sửa 2 đường dẫn này -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -292,6 +303,7 @@ body.locked main,body.locked .search{visibility:hidden}
         <label style="grid-column:1/-1"><input type="checkbox" id="edges" checked>Vẽ đường theo bề rộng thật (hai mép + tim, như bản đồ OSM)</label>
         <label><input type="checkbox" id="clip" checked>Cắt theo ranh giới</label>
         <label><input type="checkbox" id="names" checked>Ghi tên đường, sông</label>
+        <label style="grid-column:1/-1"><input type="checkbox" id="dxfAscii">Chữ không dấu trong DXF (CAD đời cũ, máy thiếu font)</label>
         <label style="grid-column:1/-1"><input type="checkbox" id="drape">Gán cao độ cho địa vật (polyline 3D theo DEM)</label>
       </div>
     </div>
