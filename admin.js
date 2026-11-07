@@ -157,7 +157,7 @@
   function showPw(email, pw) {
     $('pwFor').textContent = email; $('pwVal').textContent = pw; $('dlgPw').showModal();
   }
-  $('pwCopy').addEventListener('click', () => copy(`Tài khoản Địa hình số DEM\nĐịa chỉ: ${location.href.replace(/admin\.html.*$/, '')}\nEmail: ${$('pwFor').textContent}\nMật khẩu tạm: ${$('pwVal').textContent}`));
+  $('pwCopy').addEventListener('click', () => copy(`Tài khoản TerraVN\nĐịa chỉ: ${location.href.replace(/admin\.html.*$/, '')}\nEmail: ${$('pwFor').textContent}\nMật khẩu tạm: ${$('pwVal').textContent}`));
   $('pwClose').addEventListener('click', () => $('dlgPw').close());
 
   /* ---------- Cấp hàng loạt ---------- */
