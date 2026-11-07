@@ -333,6 +333,12 @@ body.locked main,body.locked .search{visibility:hidden}
         <div class="exp"><b>Lưới DEM</b><small>Create Surface from DEM · <code>.asc</code> + <code>.prj</code></small><button type="button" data-x="asc">Tải</button></div>
         <div class="exp"><b>Đồng mức, lưới tọa độ, địa vật</b><small>ZWCAD, AutoCAD, Civil 3D · chia layer · <code>.dxf</code> 2007</small><button type="button" data-x="dxf">Tải</button></div>
         <div class="exp"><b>Điểm cao độ PNEZD</b><small>Points from File · <code>.csv</code> · thưa <select id="ptStep" aria-label="Lấy mỗi n nút"><option value="1">mọi nút</option><option value="2" selected>1/2</option><option value="4">1/4</option><option value="5">1/5</option></select></small><button type="button" data-x="csv">Tải</button></div>
+        <div class="exp exp-img"><b>Ảnh vệ tinh nền đúng tọa độ</b><small>JPG + world file <code>.jgw</code> + <code>.prj</code> · khớp khung DXF <span id="imgNote"></span></small><button type="button" data-x="img">Tải</button>
+          <div class="ads-opts">
+            <label>Độ phân giải <select id="imgRes"><option value="0" selected>Tự động</option><option value="0.5">0,5 m/điểm ảnh</option><option value="1">1 m</option><option value="2">2 m</option><option value="5">5 m</option></select></label>
+            <label>Phạm vi <select id="imgExtent"><option value="frame" selected>Khung bản đồ</option><option value="ring">Sát vùng chọn</option></select></label>
+          </div>
+        </div>
         <div class="exp"><b>GeoJSON (WGS 84)</b><small>QGIS, ArcGIS · <code>.geojson</code></small><button type="button" data-x="geojson">Tải</button></div>
         <button class="primary" type="button" data-x="zip" style="margin-top:4px">Tải trọn bộ (.zip)</button>
       </div>
@@ -346,6 +352,7 @@ body.locked main,body.locked .search{visibility:hidden}
           <li><b>Civil 3D — bề mặt nhanh nhất:</b> <kbd>Insert</kbd> ▸ <kbd>LandXML</kbd> ▸ chọn tệp <code>.xml</code>. Bề mặt TIN được tạo ngay, tọa độ đúng hệ đã chọn ở bước 2.</li>
           <li><b>Từ lưới DEM:</b> Toolspace ▸ Prospector ▸ <kbd>Surfaces</kbd> ▸ Create Surface. Trong <kbd>Definition</kbd> ▸ <kbd>DEM Files</kbd> ▸ Add, chọn tệp <code>.asc</code>. Nếu bản vẽ chưa gán hệ tọa độ, để trống ô hệ tọa độ của DEM.</li>
           <li><b>ZWCAD, AutoCAD:</b> mở tệp <code>.dxf</code> (chuẩn DXF 2007, chữ tiếng Việt Unicode, font Arial). Dùng được với ZWCAD, AutoCAD, Civil 3D từ bản 2007 trở lên. Phần mềm đời cũ hơn: bật ô <b>"Chữ không dấu trong DXF"</b>.</li>
+          <li><b>Ảnh vệ tinh nền:</b> giải nén cả <code>.jpg</code>, <code>.jgw</code>, <code>.prj</code> vào cùng thư mục. Civil 3D: <kbd>MAPIINSERT</kbd> tự đặt đúng chỗ. ZWCAD, AutoCAD, ADS Civil: <kbd>IMAGEATTACH</kbd>, nhập điểm chèn và tỷ lệ ghi trong <code>HUONG_DAN_ANH.txt</code>. QGIS: kéo thả tệp ảnh.</li>
           <li><b>Đường đồng mức:</b> mở hoặc chèn tệp <code>.dxf</code>. Đồng mức là polyline có cao độ trên layer <code>DM_CAI</code>, <code>DM_CON</code>, dùng được cho <kbd>Definition</kbd> ▸ <kbd>Contours</kbd> ▸ Add.</li>
           <li><b>Điểm:</b> <kbd>Insert</kbd> ▸ <kbd>Points from File</kbd>, định dạng <code>PNEZD (comma delimited)</code>.</li>
           <li>Kiểm tra với một mốc cao độ đã biết, nhập chênh lệch vào ô ΔH rồi chạy lại.</li>
