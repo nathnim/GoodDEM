@@ -8,7 +8,7 @@
     login: 'Đăng nhập', login_fail: 'Sai mật khẩu', change_password: 'Đổi mật khẩu', run: 'Dựng địa hình',
     export_xml: 'Xuất LandXML', export_asc: 'Xuất DEM .asc', export_dxf: 'Xuất DXF', export_csv: 'Xuất điểm CSV',
     export_geojson: 'Xuất GeoJSON', export_zip: 'Xuất trọn bộ .zip', create_user: 'Tạo tài khoản', bulk_create: 'Tạo hàng loạt',
-    update_user: 'Sửa tài khoản', reset_password: 'Cấp lại mật khẩu', delete_user: 'Xóa tài khoản'
+    update_user: 'Sửa tài khoản', update_limits: 'Đổi giới hạn sinh viên', reset_password: 'Cấp lại mật khẩu', delete_user: 'Xóa tài khoản'
   };
 
   function toast(msg) {
@@ -29,7 +29,7 @@
   /* ---------- Tab ---------- */
   document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
-    ['users', 'bulk', 'logs'].forEach(t => $('tab-' + t).hidden = t !== b.dataset.tab);
+    ['users', 'bulk', 'logs', 'limits'].forEach(t => $('tab-' + t).hidden = t !== b.dataset.tab);
     if (b.dataset.tab === 'logs' && !$('ltbody').children.length) loadLogs();
   }));
 
@@ -217,6 +217,28 @@
   $('btnLogs').addEventListener('click', loadLogs);
   $('lq').addEventListener('keydown', (e) => { if (e.key === 'Enter') loadLogs(); });
 
+  /* ---------- Giới hạn sinh viên (chỉ quản trị) ---------- */
+  let LIM_DEFAULTS = null;
+  function fillLimits(L) {
+    $('limOn').checked = !!L.enabled; $('limArea').value = L.maxAreaKm2; $('limCell').value = L.minCellM; $('limQuota').value = L.exportsPerDay;
+    document.querySelectorAll('[name=limSrc]').forEach(c => c.checked = L.sources.includes(c.value));
+    document.querySelectorAll('[name=limFmt]').forEach(c => c.checked = L.formats.includes(c.value));
+  }
+  $('limDefault').addEventListener('click', async () => {
+    try { if (!LIM_DEFAULTS) LIM_DEFAULTS = (await Auth.api('getSettings')).defaults; fillLimits(LIM_DEFAULTS); toast('Đã điền giá trị mặc định, bấm Lưu để áp dụng'); }
+    catch (e) { toast(e.message); }
+  });
+  $('fLim').addEventListener('submit', async (e) => {
+    e.preventDefault(); $('limErr').hidden = true; const btn = $('limSave'); btn.disabled = true;
+    const pick = (n) => [...document.querySelectorAll('[name=' + n + ']:checked')].map(c => c.value);
+    try {
+      const j = await Auth.api('saveSettings', { limits: { enabled: $('limOn').checked, maxAreaKm2: +$('limArea').value, minCellM: +$('limCell').value,
+        exportsPerDay: +$('limQuota').value, sources: pick('limSrc'), formats: pick('limFmt') } });
+      fillLimits(j.limits); toast('Đã lưu. Sinh viên nhận giới hạn mới ở lần mở ứng dụng kế tiếp.');
+    } catch (x) { $('limErr').textContent = x.message; $('limErr').hidden = false; }
+    btn.disabled = false;
+  });
+
   /* ---------- Khởi động ---------- */
   Auth.boot({
     roles: ['admin', 'teacher'],
@@ -227,6 +249,7 @@
       USERS = p.users || (await Auth.api('listUsers')).users;
       Auth.unlock();
       if (ME.role !== 'admin') { $('bulkRoleWrap').hidden = true; $('roleSeg').hidden = true; }
+      if (ME.role === 'admin' && p.limits) { $('tabLimits').hidden = false; fillLimits(p.limits); }
       renderUsers(); loadStats(p.stats);
     }
   });

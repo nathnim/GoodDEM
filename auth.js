@@ -36,7 +36,8 @@
   function card(html) {
     gate().hidden = false;
     gate().innerHTML = `<div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="gTitle">
-      <div class="gate-brand"><b>Địa hình số DEM</b><span>Trường Đại học Giao thông Vận tải</span></div>${html}</div>`;
+      <div class="gate-brand"><b>Địa hình số DEM</b><span>Dữ liệu địa hình cho ADS Civil, Civil 3D</span></div>${html}
+      <p class="gate-copy"><b>© TS. Đặng Minh Tân</b>, Bộ môn Đường bộ – Sân bay | Khoa Công trình và Môi trường | Trường Đại học Giao thông Vận tải</p></div>`;
   }
   function setErr(msg) { const e = $('gErr'); if (e) { e.textContent = msg || ''; e.hidden = !msg; } }
   function busy(btn, on, text) { if (!btn) return; btn.disabled = on; if (text) btn.textContent = text; }

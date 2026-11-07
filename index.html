@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Địa hình số DEM</title>
-<meta name="description" content="Khoanh vùng trên bản đồ, lấy cao độ và địa vật từ dữ liệu mở, xuất DEM, LandXML, DXF đường đồng mức theo VN-2000 cho Civil 3D.">
+<meta name="description" content="Khoanh vùng trên bản đồ, lấy cao độ và địa vật từ dữ liệu mở, xuất dữ liệu địa hình theo VN-2000 cho ADS Civil và Civil 3D.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -79,6 +79,9 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .exp{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;background:var(--paper)}
 .exp b{font-size:13px;font-weight:600} .exp small{color:var(--muted);font-size:11.5px;grid-column:1}
 .exp button{grid-row:1/span 2;grid-column:2;font-size:12.5px}
+.limits{margin:12px 18px 0;padding:9px 12px;border-radius:var(--r);background:var(--accent-soft);border:1px solid var(--accent);font-size:12.5px;line-height:1.55}
+.lim-off{opacity:.45}
+.exp.lim-off button{cursor:not-allowed}
 .exp-ads{border-color:var(--accent);background:var(--accent-soft)}
 .ads-opts{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin-top:6px;font-size:12px;color:var(--muted)}
 .ads-opts label{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -112,7 +115,7 @@ body.locked main,body.locked .search{visibility:hidden}
 <body class="locked">
 <div id="gate" class="gate" hidden></div>
 <header class="top">
-  <div class="brand"><h1>Địa hình số DEM</h1><span>Khoanh vùng · Cao độ · Địa vật · Civil 3D</span></div>
+  <div class="brand"><h1>Địa hình số DEM</h1><span>Khoanh vùng · Cao độ · Địa vật · ADS Civil · Civil 3D</span></div>
   <form class="search" id="searchForm" autocomplete="off">
     <input type="text" id="q" placeholder="Tìm địa danh (vd. Tam Đảo, Đèo Ngang)" aria-label="Tìm địa danh">
     <button type="submit">Tìm</button>
@@ -139,6 +142,7 @@ body.locked main,body.locked .search{visibility:hidden}
   </section>
 
   <aside>
+    <div class="limits" id="limitBox" hidden></div>
     <div class="step">
       <h2><span class="n">1</span>Khoanh vùng</h2>
       <p class="hint" style="margin-top:0">Dùng các nút ở góc trái bản đồ: <b>ô vuông theo tâm</b> (đi theo chuột, bấm để đặt), khung chữ nhật, đa giác; nút bút để kéo chỉnh đỉnh. Vẽ vùng mới sẽ thay vùng cũ.</p>
@@ -357,6 +361,8 @@ Auth.boot({
     const j = p.core ? p : await Auth.api('getCode');
     const run = (code) => { const s = document.createElement('script'); s.textContent = code; document.body.appendChild(s); };
     window.DEM_USER = user;
+    window.DEM_LIMITS = j.limits || null;
+    window.DEM_QUOTA = j.quotaLeft != null ? j.quotaLeft : null;
     run(j.core);
     if (!window.DEMCore) throw new Error('Mô-đun tính toán không nạp được.');
     Auth.unlock();

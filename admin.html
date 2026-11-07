@@ -64,6 +64,10 @@ dialog::backdrop{background:rgba(15,22,19,.45)}
 dialog h3{margin:0 0 14px;font-size:16px}
 dialog .row-btn{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 .pwbox{font:600 20px var(--ff-mono);letter-spacing:.06em;background:var(--paper);border:1px dashed var(--accent);border-radius:var(--r);padding:12px;text-align:center;margin:8px 0;user-select:all}
+.limits-form{max-width:760px}
+.lim-set{border:1px solid var(--line);border-radius:var(--r);padding:10px 14px;margin:0;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.lim-set legend{font-size:12px;color:var(--muted);padding:0 4px}
+.lim-set input,.lim-on input{accent-color:var(--accent)}
 .err{color:var(--bad);font-size:13px;margin:8px 0 0}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 16px;border-radius:99px;font-size:13px;z-index:6000}
 footer{max-width:1400px;margin:0 auto;padding-block:0 30px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font-size:11.5px;color:var(--muted)}
@@ -84,6 +88,7 @@ footer{max-width:1400px;margin:0 auto;padding-block:0 30px;padding-left:max(16px
     <button role="tab" aria-selected="true" data-tab="users">Tài khoản</button>
     <button role="tab" aria-selected="false" data-tab="bulk">Cấp tài khoản hàng loạt</button>
     <button role="tab" aria-selected="false" data-tab="logs">Nhật ký sử dụng</button>
+    <button role="tab" aria-selected="false" data-tab="limits" id="tabLimits" hidden>Giới hạn sinh viên</button>
   </div>
 
   <!-- TÀI KHOẢN -->
@@ -141,6 +146,41 @@ sv002@st.utc.edu.vn, Trần Thị Bình"></textarea>
         <div class="tbl-wrap"><table><thead><tr><th>Email</th><th>Họ tên</th><th>Mật khẩu tạm</th></tr></thead><tbody id="bulkRes"><tr class="empty-row"><td colspan="3">Chưa tạo.</td></tr></tbody></table></div>
       </div>
     </div>
+  </section>
+
+  <!-- GIỚI HẠN SINH VIÊN (chỉ quản trị) -->
+  <section id="tab-limits" hidden>
+    <form class="panel limits-form" id="fLim">
+      <label class="gchk lim-on"><input type="checkbox" id="limOn"> <b>Áp giới hạn cho mọi tài khoản sinh viên</b></label>
+      <p class="hint" style="margin:4px 0 14px">Quản trị viên và giảng viên không bị giới hạn. Máy chủ kiểm tra lại mỗi lần sinh viên xuất tệp.</p>
+      <div class="fields">
+        <label class="f">Diện tích vùng tối đa (km²)<input type="number" id="limArea" min="0.01" step="0.5"></label>
+        <label class="f">Bước lưới nhỏ nhất (m)<input type="number" id="limCell" min="1" step="1"></label>
+        <label class="f">Số lượt xuất mỗi ngày<input type="number" id="limQuota" min="0" step="1"></label>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <fieldset class="lim-set"><legend>Nguồn cao độ được dùng</legend>
+          <label><input type="checkbox" name="limSrc" value="terrarium"> Terrain Tiles (AWS)</label>
+          <label><input type="checkbox" name="limSrc" value="opentopo"> OpenTopography</label>
+          <label><input type="checkbox" name="limSrc" value="upload"> GeoTIFF tải lên</label>
+        </fieldset>
+        <fieldset class="lim-set"><legend>Định dạng được xuất</legend>
+          <label><input type="checkbox" name="limFmt" value="ads"> ADS Civil</label>
+          <label><input type="checkbox" name="limFmt" value="dxf"> DXF đồng mức, lưới, địa vật</label>
+          <label><input type="checkbox" name="limFmt" value="xml"> LandXML (Civil 3D)</label>
+          <label><input type="checkbox" name="limFmt" value="asc"> Lưới DEM .asc</label>
+          <label><input type="checkbox" name="limFmt" value="csv"> Điểm PNEZD .csv</label>
+          <label><input type="checkbox" name="limFmt" value="geojson"> GeoJSON</label>
+          <label><input type="checkbox" name="limFmt" value="zip"> Trọn bộ .zip</label>
+        </fieldset>
+      </div>
+      <p class="err" id="limErr" hidden></p>
+      <div class="bar" style="margin:16px 0 0">
+        <button type="button" id="limDefault">Về mặc định</button>
+        <span class="grow"></span>
+        <button type="submit" class="btn-acc" id="limSave">Lưu giới hạn</button>
+      </div>
+    </form>
   </section>
 
   <!-- NHẬT KÝ -->
