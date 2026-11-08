@@ -95,6 +95,9 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .limits{margin:12px 18px 0;padding:9px 12px;border-radius:var(--r);background:var(--accent-soft);border:1px solid var(--accent);font-size:12.5px;line-height:1.55}
 .lim-off{opacity:.45}
 .exp.lim-off button{cursor:not-allowed}
+.featstat{font-size:12px;color:var(--muted);flex:1 1 180px;min-width:0}
+.featstat.busy{color:var(--warn)} .featstat.ok{color:var(--ok)} .featstat.warn{color:var(--warn)} .featstat.bad{color:var(--bad)}
+.featstat.busy::before{content:"";display:inline-block;width:9px;height:9px;margin-right:6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-1px}
 .exp-ads{border-color:var(--accent);background:var(--accent-soft)}
 .ads-opts{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin-top:6px;font-size:12px;color:var(--muted)}
 .ads-opts label{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -319,7 +322,7 @@ body.locked main,body.locked .search{visibility:hidden}
     <div class="step" id="resStep" hidden>
       <h2><span class="n">7</span>Kết quả và xuất file</h2>
       <dl class="kv" id="resInfo" style="margin:0 0 12px"></dl>
-      <div class="tools" style="margin:-4px 0 12px"><button type="button" id="btnFeat">Tải lại địa vật</button></div>
+      <div class="tools" style="margin:-4px 0 12px;align-items:center"><button type="button" id="btnFeat">Tải lại địa vật</button><span class="featstat" id="featStatus"></span></div>
       <div class="exports">
         <div class="exp exp-ads"><b>ADS Civil</b><small>Tệp điểm <code>.txt</code> + bản vẽ <code>.dxf</code> (điểm 3D, đồng mức, lưới, địa vật) <span id="adsNote"></span></small><button type="button" data-x="ads">Tải</button>
           <div class="ads-opts">
