@@ -343,6 +343,14 @@ body.locked main,body.locked .search{visibility:hidden}
             <label>Phạm vi <select id="imgExtent"><option value="frame" selected>Khung bản đồ</option><option value="ring">Sát vùng chọn</option></select></label>
           </div>
         </div>
+        <div class="exp exp-img"><b>Bản đồ màu địa hình đúng tọa độ</b><small>Như bản xem trước · JPG/PNG + world file · chèn vào ZWCAD, AutoCAD, Civil 3D <span id="mapNote"></span></small><button type="button" data-x="map">Tải</button>
+          <div class="ads-opts">
+            <label>Nội dung <select id="mapContent"><option value="full" selected>Như bản xem trước</option><option value="contour">Màu, bóng đổ, đồng mức</option><option value="base">Chỉ màu + bóng đổ (lót dưới DXF)</option></select></label>
+            <label>Độ phân giải <select id="mapRes"><option value="0" selected>Tự động</option><option value="1">1 m/điểm ảnh</option><option value="2">2 m</option><option value="5">5 m</option><option value="10">10 m</option></select></label>
+            <label>Phạm vi <select id="mapExtent"><option value="frame" selected>Khung bản đồ</option><option value="ring">Sát vùng chọn</option></select></label>
+            <label>Định dạng <select id="mapFmt"><option value="jpg" selected>JPG (nhẹ)</option><option value="png">PNG (trong suốt ngoài vùng)</option></select></label>
+          </div>
+        </div>
         <div class="exp"><b>GeoJSON (WGS 84)</b><small>QGIS, ArcGIS · <code>.geojson</code></small><button type="button" data-x="geojson">Tải</button></div>
         <button class="primary" type="button" data-x="zip" style="margin-top:4px">Tải trọn bộ (.zip)</button>
       </div>
