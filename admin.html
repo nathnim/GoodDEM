@@ -49,7 +49,7 @@ td.wrap-cell{white-space:normal;min-width:110px;max-width:220px}
 .acts .del:hover{border-color:var(--bad);color:var(--bad)}
 .chip{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:99px;border:1px solid currentColor}
 .c-active{color:var(--ok)} .c-locked{color:var(--bad)} .c-expired{color:var(--warn)} .c-must{color:var(--muted)}
-.r-admin{color:var(--accent)} .r-teacher{color:var(--survey)} .r-student{color:var(--muted)}
+.r-admin{color:var(--accent)} .r-moderator{color:#7A4FB5} .r-teacher{color:var(--survey)} .r-student{color:var(--muted)}
 .empty-row td{text-align:center;color:var(--muted);padding:28px}
 .muted{color:var(--muted)}
 .count{font-size:12.5px;color:var(--muted)}
@@ -97,6 +97,7 @@ footer{max-width:1400px;margin:0 auto;padding-block:0 30px;padding-left:max(16px
     <div class="roleseg" id="roleSeg" role="tablist" aria-label="Nhóm tài khoản">
       <button type="button" data-role="" aria-selected="true">Tất cả <b data-n=""></b></button>
       <button type="button" data-role="admin" aria-selected="false">Quản trị <b data-n="admin"></b></button>
+      <button type="button" data-role="moderator" aria-selected="false">Điều phối <b data-n="moderator"></b></button>
       <button type="button" data-role="teacher" aria-selected="false">Giảng viên <b data-n="teacher"></b></button>
       <button type="button" data-role="student" aria-selected="false">Sinh viên <b data-n="student"></b></button>
     </div>
@@ -125,9 +126,9 @@ sv002@st.utc.edu.vn, Trần Thị Bình"></textarea>
         </label>
         <div class="fields" style="margin-top:10px">
           <label class="f" id="bulkRoleWrap">Vai trò
-            <select id="bulkRole"><option value="student" selected>Sinh viên</option><option value="teacher">Giảng viên</option></select>
+            <select id="bulkRole"><option value="student" selected>Sinh viên</option><option value="teacher">Giảng viên</option><option value="moderator">Điều phối viên</option></select>
           </label>
-          <label class="f">Hạn dùng (bỏ trống = không hạn)
+          <label class="f">Hạn dùng (sinh viên mặc định 2 tuần)
             <input type="date" id="bulkExp">
           </label>
           <label class="f full">Ghi chú chung (vd. lớp, học phần)
@@ -149,11 +150,12 @@ sv002@st.utc.edu.vn, Trần Thị Bình"></textarea>
     </div>
   </section>
 
-  <!-- GIỚI HẠN SINH VIÊN (chỉ quản trị) -->
+  <!-- GIỚI HẠN SINH VIÊN (quản trị sửa; điều phối viên xem) -->
   <section id="tab-limits" hidden>
     <form class="panel limits-form" id="fLim">
       <label class="gchk lim-on"><input type="checkbox" id="limOn"> <b>Áp giới hạn cho mọi tài khoản sinh viên</b></label>
-      <p class="hint" style="margin:4px 0 14px">Quản trị viên và giảng viên không bị giới hạn. Máy chủ kiểm tra lại mỗi lần sinh viên xuất tệp.</p>
+      <p class="hint" style="margin:4px 0 14px">Quản trị viên, điều phối viên và giảng viên không bị giới hạn. Máy chủ kiểm tra lại mỗi lần sinh viên xuất tệp.</p>
+      <p class="hint" id="limRO" hidden style="margin:-8px 0 14px;color:var(--warn,#B5650D)">Bạn đang xem ở chế độ chỉ đọc. Chỉ quản trị viên được thay đổi giới hạn.</p>
       <div class="fields">
         <label class="f">Diện tích vùng tối đa (km²)<input type="number" id="limArea" min="0.01" step="0.5"></label>
         <label class="f">Bước lưới nhỏ nhất (m)<input type="number" id="limCell" min="1" step="1"></label>
@@ -208,9 +210,9 @@ sv002@st.utc.edu.vn, Trần Thị Bình"></textarea>
       <label class="f full">Email<input type="email" id="uEmail" required></label>
       <label class="f full">Họ tên<input type="text" id="uName"></label>
       <label class="f">Vai trò
-        <select id="uRole"><option value="student">Sinh viên</option><option value="teacher">Giảng viên</option><option value="admin">Quản trị</option></select>
+        <select id="uRole"><option value="student">Sinh viên</option><option value="teacher">Giảng viên</option><option value="moderator">Điều phối viên (hỗ trợ quản trị)</option><option value="admin">Quản trị</option></select>
       </label>
-      <label class="f">Hạn dùng<input type="date" id="uExp"></label>
+      <label class="f">Hạn dùng <small class="muted">(sinh viên mặc định 2 tuần)</small><input type="date" id="uExp"></label>
       <label class="f" id="uStatWrap">Trạng thái
         <select id="uStat"><option value="active">Đang dùng</option><option value="locked">Khóa</option></select>
       </label>

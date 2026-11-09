@@ -4,11 +4,15 @@
   const $ = (id) => document.getElementById(id);
   const esc = Auth.esc, R = Auth.ROLE_VI;
   let ME = null, USERS = [], editing = null, bulkOut = [], ROLE = '';
+  const ORDER = ['admin', 'moderator', 'teacher', 'student'];
+  /** Vai trò người đang đăng nhập được cấp/chuyển (máy chủ kiểm tra lại) */
+  const rolesICanGive = () => ME.role === 'admin' ? ORDER : ME.role === 'moderator' ? ['teacher', 'student'] : ['student'];
   const ACT = {
     login: 'Đăng nhập', login_fail: 'Sai mật khẩu', change_password: 'Đổi mật khẩu', run: 'Dựng địa hình',
     export_xml: 'Xuất LandXML', export_asc: 'Xuất DEM .asc', export_dxf: 'Xuất DXF', export_csv: 'Xuất điểm CSV',
     export_geojson: 'Xuất GeoJSON', export_zip: 'Xuất trọn bộ .zip', create_user: 'Tạo tài khoản', bulk_create: 'Tạo hàng loạt',
-    update_user: 'Sửa tài khoản', update_limits: 'Đổi giới hạn sinh viên', reset_password: 'Cấp lại mật khẩu', delete_user: 'Xóa tài khoản'
+    update_user: 'Sửa tài khoản', update_limits: 'Đổi giới hạn sinh viên', reset_password: 'Cấp lại mật khẩu', delete_user: 'Xóa tài khoản',
+    export_ads: 'Xuất ADS Civil', export_img: 'Xuất ảnh vệ tinh', export_map: 'Xuất bản đồ màu'
   };
 
   function toast(msg) {
@@ -38,8 +42,10 @@
     try {
       const s = pre || (await Auth.api('stats')).stats;
       const items = ME.role === 'admin'
-        ? [[s.total, 'Tài khoản'], [s.by.admin, 'Quản trị'], [s.by.teacher, 'Giảng viên'], [s.by.student, 'Sinh viên']]
-        : [[s.by.student, 'Sinh viên đã cấp']];
+        ? [[s.total, 'Tài khoản'], [s.by.admin, 'Quản trị'], [s.by.moderator || 0, 'Điều phối'], [s.by.teacher, 'Giảng viên'], [s.by.student, 'Sinh viên']]
+        : ME.role === 'moderator'
+          ? [[s.by.teacher, 'Giảng viên'], [s.by.student, 'Sinh viên']]
+          : [[s.by.student, 'Sinh viên đã cấp']];
       items.push([s.locked + s.expired, 'Khóa hoặc hết hạn', s.locked + s.expired > 0], [s.active7, 'Người dùng (7 ngày)'], [s.runs7, 'Lượt dựng địa hình (7 ngày)'], [s.exports7, 'Lượt xuất file (7 ngày)']);
       $('stats').innerHTML = items.map(([v, l, w]) => `<div class="stat${w ? ' warn' : ''}"><b>${v}</b><span>${l}</span></div>`).join('');
     } catch (e) { $('stats').innerHTML = `<div class="stat"><span>${esc(e.message)}</span></div>`; }
@@ -62,7 +68,7 @@
     document.querySelectorAll('#roleSeg [data-n]').forEach(b => { const r = b.dataset.n; b.textContent = r ? USERS.filter(u => u.role === r).length : USERS.length; });
     const list = USERS.filter(u => (!fr || u.role === fr) && (!fs || statusOf(u)[0] === fs) &&
       (!q || [u.email, u.name, u.note, u.createdBy].join(' ').toLowerCase().includes(q)))
-      .sort((a, b) => ['admin', 'teacher', 'student'].indexOf(a.role) - ['admin', 'teacher', 'student'].indexOf(b.role) || a.email.localeCompare(b.email));
+      .sort((a, b) => ORDER.indexOf(a.role) - ORDER.indexOf(b.role) || a.email.localeCompare(b.email));
     $('ucount').textContent = `${list.length} / ${USERS.length} tài khoản`;
     if (!list.length) { $('utbody').innerHTML = '<tr class="empty-row"><td colspan="9">Không có tài khoản phù hợp.</td></tr>'; return; }
     $('utbody').innerHTML = list.map(u => {
@@ -124,9 +130,11 @@
     $('dlgUserTitle').textContent = u ? 'Sửa tài khoản' : 'Thêm tài khoản';
     $('uEmail').value = u ? u.email : ''; $('uEmail').disabled = !!u;
     $('uName').value = u ? u.name : '';
-    $('uRole').value = u ? u.role : (ME.role !== 'admin' ? 'student' : ROLE || 'teacher');
-    $('uRole').disabled = ME.role !== 'admin';
-    $('uExp').value = u ? u.expires || '' : '';
+    const can = rolesICanGive();
+    [...$('uRole').options].forEach(o => { o.hidden = o.disabled = !can.includes(o.value) && !(u && u.role === o.value); });
+    $('uRole').value = u ? u.role : (can.includes(ROLE) ? ROLE : can.includes('teacher') ? 'teacher' : 'student');
+    $('uRole').disabled = can.length < 2;
+    $('uExp').value = u ? u.expires || '' : ($('uRole').value === 'student' ? plusDays(14) : '');
     $('uStat').value = u ? u.status : 'active'; $('uStatWrap').hidden = !u;
     $('uPwWrap').hidden = !!u; $('uPw').value = '';
     $('uNote').value = u ? u.note || '' : '';
@@ -134,12 +142,24 @@
     $('dlgUser').showModal();
   }
   $('btnAdd').addEventListener('click', () => openUser(null));
+  /** Sinh viên mới: hạn dùng mặc định 2 tuần (máy chủ cũng tự đặt nếu để trống) */
+  function plusDays(n) { const d = new Date(Date.now() + n * 86400000 + 7 * 3600000); return d.toISOString().slice(0, 10); }
+  $('uRole').addEventListener('change', () => {
+    if (editing) return;
+    if ($('uRole').value === 'student') { if (!$('uExp').value) $('uExp').value = plusDays(14); }
+    else if ($('uExp').value === plusDays(14)) $('uExp').value = '';
+  });
+  $('bulkRole').addEventListener('change', () => {
+    if ($('bulkRole').value === 'student') { if (!$('bulkExp').value) $('bulkExp').value = plusDays(14); }
+    else if ($('bulkExp').value === plusDays(14)) $('bulkExp').value = '';
+  });
+  if (!$('bulkExp').value) $('bulkExp').value = plusDays(14);
   $('uCancel').addEventListener('click', () => $('dlgUser').close());
   $('fUser').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = $('uSave'); btn.disabled = true; $('uErr').hidden = true;
     const data = { name: $('uName').value.trim(), expires: $('uExp').value, note: $('uNote').value.trim() };
-    if (ME.role === 'admin') data.role = $('uRole').value;
+    if (rolesICanGive().length > 1) data.role = $('uRole').value;
     try {
       if (editing) {
         data.email = editing.email; data.status = $('uStat').value;
@@ -241,15 +261,24 @@
 
   /* ---------- Khởi động ---------- */
   Auth.boot({
-    roles: ['admin', 'teacher'],
+    roles: ['admin', 'moderator', 'teacher'],
     want: 'admin',
     loadingText: 'Đang tải danh sách tài khoản…',
     async onReady(user, p) {
       ME = user;
       USERS = p.users || (await Auth.api('listUsers')).users;
       Auth.unlock();
-      if (ME.role !== 'admin') { $('bulkRoleWrap').hidden = true; $('roleSeg').hidden = true; }
-      if (ME.role === 'admin' && p.limits) { $('tabLimits').hidden = false; fillLimits(p.limits); }
+      if (ME.role === 'teacher') { $('bulkRoleWrap').hidden = true; $('roleSeg').hidden = true; }
+      if (ME.role === 'moderator')                       // điều phối viên: chỉ thấy nhóm giảng viên, sinh viên
+        document.querySelectorAll('#roleSeg [data-role="admin"], #roleSeg [data-role="moderator"]').forEach(b => b.hidden = true);
+      [...$('bulkRole').options].forEach(o => { o.hidden = o.disabled = !rolesICanGive().includes(o.value); });
+      if (p.limits) {
+        $('tabLimits').hidden = false; fillLimits(p.limits);
+        if (!p.canEditLimits) {                          // chỉ xem
+          $('fLim').querySelectorAll('input, button').forEach(x => x.disabled = true);
+          $('limRO').hidden = false;
+        }
+      }
       renderUsers(); loadStats(p.stats);
     }
   });
